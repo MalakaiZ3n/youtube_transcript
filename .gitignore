@@ -205,3 +205,7 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Ignore YouTube transcript outputs
+youtube_transcript_*.txt
+youtube_transcript_*.json
