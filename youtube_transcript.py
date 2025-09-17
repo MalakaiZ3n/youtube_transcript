@@ -1,4 +1,5 @@
 import re
+import json
 from youtube_transcript_api import YouTubeTranscriptApi
 
 def paragraph_cleanup(text, max_len=500):
@@ -21,6 +22,12 @@ def fetch_transcript(video_id):
     try:
         api = YouTubeTranscriptApi()
         fetched = api.fetch(video_id, languages=['en'])
+
+        # JSON Version
+        json_filename = f"youtube_transcript_{video_id}.json"
+        with open(json_filename, "w", encoding="utf-8") as jf:
+            json.dump([s.__dict__ for s in fetched], jf, indent=2)
+        print(f"JSON transcript saved to {json_filename}")
 
         # Paragraph Cleanup
         lines = " ".join([snippet.text for snippet in fetched])
