@@ -9,7 +9,7 @@ A Python script to fetch and clean up transcripts from YouTube videos using the 
 - Extracts transcript using video ID
 - Groups captions into readable paragraphs
 - Removes filler tags like `[Music]`
-- Saves transcript to a `.txt` file
+- Saves transcript to a `.txt` and `.json` file
 
 ## Requirements
 
@@ -25,5 +25,5 @@ Enter a YouTube video ID at the end of the URL when prompted.
 
 The transcript will be saved as:
 
-youtube_transcript_<VIDEO_ID>.txt
+youtube_transcript_<SAFE_TITLE>_<VIDEO_ID>.txt
 
