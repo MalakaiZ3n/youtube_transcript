@@ -16,14 +16,17 @@ A Python script to fetch and clean up transcripts from YouTube videos using the 
 - Python 3.7+
 - See `requirements.txt` for dependencies
 
-Optionally add pytube later if you decide to fetch video titles
+## Usage
 
-Usage
+```
 python youtube_transcript.py
+```
 
-Enter a YouTube video ID at the end of the URL when prompted.
+Enter a YouTube URL or video ID when prompted.
 
 The transcript will be saved as:
 
-youtube_transcript_<SAFE_TITLE>_<VIDEO_ID>.txt
-
+```
+transcripts/<SAFE_TITLE>_<VIDEO_ID>.txt
+transcripts/<SAFE_TITLE>_<VIDEO_ID>.json
+```
