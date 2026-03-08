@@ -1,7 +1,11 @@
 import re
 import json
+import os
+import sys
 from youtube_transcript_api import YouTubeTranscriptApi
 import yt_dlp
+
+TRANSCRIPT_DIR = "transcripts"
 
 def extract_video_id(url_or_id):
     """Extract video ID from YouTube URL or return ID if already provided"""
@@ -39,10 +43,20 @@ def get_video_title(video_id):
             'quiet': True,
             'no_warnings': True,
             'skip_download': True,
+            'noprogress': True,
+            'logtostderr': False,
+            'ignoreerrors': True,
         }
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(f"https://www.youtube.com/watch?v={video_id}", download=False)
-            return info.get('title', video_id)
+        with open(os.devnull, 'w') as devnull:
+            ydl_opts['logtostderr'] = False
+            old_stderr = sys.stderr
+            sys.stderr = devnull
+            try:
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    info = ydl.extract_info(f"https://www.youtube.com/watch?v={video_id}", download=False)
+                    return info.get('title', video_id)
+            finally:
+                sys.stderr = old_stderr
     except Exception as e:
         print(f"Could not fetch title: {e}")
         return video_id
@@ -73,8 +87,10 @@ def fetch_transcript(video_id):
         api = YouTubeTranscriptApi()
         fetched = api.fetch(video_id, languages=['en'])
 
+        os.makedirs(TRANSCRIPT_DIR, exist_ok=True)
+
         # JSON Version
-        json_filename = f"{safe_title}_{video_id}.json"
+        json_filename = os.path.join(TRANSCRIPT_DIR, f"{safe_title}_{video_id}.json")
         with open(json_filename, "w", encoding="utf-8") as jf:
             json.dump([s.__dict__ for s in fetched], jf, indent=2)
         print(f"JSON transcript saved to {json_filename}")
@@ -85,7 +101,7 @@ def fetch_transcript(video_id):
         formatted = paragraph_cleanup(cleaned)
 
         # Save using video ID
-        filename = f"{safe_title}_{video_id}.txt"
+        filename = os.path.join(TRANSCRIPT_DIR, f"{safe_title}_{video_id}.txt")
         with open(filename, "w", encoding="utf-8") as f:
             f.write(formatted)
 
